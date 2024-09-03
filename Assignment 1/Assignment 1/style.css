@@ -1,0 +1,64 @@
+body{
+    margin: 0;
+}
+
+.main {
+    padding: 2rem 15rem ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu{
+    font: size 70%;
+}
+
+.others{
+    
+    gap: 2rem;
+   display: flex;
+    font-size: 60%;
+}
+
+ /* .lawyer{
+    width: 100%;
+    height: 800px;
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+    top: -200;
+    bottom: -600px;
+}  */
+
+.hero {
+    overflow: hidden;
+    height: 675px;
+    position: relative;
+}
+.lawyer {
+    top: 0;
+    position: absolute;
+    bottom: -210px;
+    width: 100%;
+    height: auto;
+}
+.content{
+    padding: 2rem;
+    position: absolute;
+    margin-left: 17%;
+    margin-top: 10%;
+    height: 330px;
+    background-color: rgb(27, 59, 91);
+    color: white;
+    padding: 30px;
+    width: 300px;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+
+    
+}
+.improve{
+    font-size: 200%;
+    position: relative;
+}
