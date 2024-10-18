@@ -1,0 +1,439 @@
+/* General body styling */
+body {
+    background-color: #bebcbc;
+}
+
+/* Search section styling */
+.search {
+    background-image: url('/static/Images/banner.jpg'); 
+    background-size: cover;  
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    width: 450px;
+    height: 100px;
+}
+
+.search h2, .search p {
+    background: none;  
+}
+
+.weatherbox {
+    font-family: Arial, sans-serif;
+    height: auto;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form styling */
+.form {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+}
+
+.form label {
+    background: rgb(255, 255, 255);
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form input[type="text"], 
+.form select {
+    background-color: white;
+    border: 1px solid #b6b4b4; /* Light grey border */
+    width: 100%; /* Full width of the container */
+    margin-bottom: 15px; /* Space between input fields */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.form .form-row {
+    display: flex; /* Flexbox for rows */
+    justify-content: space-between; /* Space between the fields */
+    gap: 15px; /* Adds space between columns */
+}
+
+.form .form-row .column {
+    width: 90%; /* Each column takes up half the row */
+}
+
+.auto-detect {
+    margin-top: 15px; /* Space above the checkbox section */
+    display: flex;
+    align-items: center;
+}
+
+.auto-detect label {
+    margin-right: 10px; /* Space between label and checkbox */
+}
+
+.buttons {
+    margin-top: 20px; /* Space above buttons */
+}
+
+.submit-btn, .clear-btn {
+    padding: 10px 20px; /* Padding inside the buttons */
+}
+
+.submit-btn {
+    background-color: #314c97; /* Blue background */
+    color: rgb(242, 242, 247); /* White text */
+}
+
+.clear-btn {
+    background-color: #f4a01c; /* Orange background */
+    color: white; /* White text */
+}
+
+.submit-btn:hover {
+    background-color: #305bff; /* Darker blue on hover */
+}
+
+.clear-btn:hover {
+    background-color: #d48d1a; /* Darker orange on hover */
+}
+
+/* Weather card styling */
+.weather-card {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: white;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Address aligned to the top-left */
+.address {
+    font-size: 1.4em;
+    color: #555;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: left; /* Aligns address to the left */
+}
+
+/* Container for the weather icon, description, and temperature */
+.temperature-section {
+    display: flex;
+    justify-content: space-between; /* Ensures icon and temp are at opposite ends */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Icon and description are grouped together */
+.weather-icon-section {
+    display: flex;
+    flex-direction: column; /* Stacks icon and description vertically */
+    align-items: flex-start; /* Aligns content to the left */
+}
+
+.weather-icon {
+    width: 80px;
+    height: 80px;
+}
+
+.weather-description {
+    font-size: 1.4em;
+    color: #555;
+    margin-top: 5px;
+    text-align: left; /* Align description below the icon */
+}
+
+/* Temperature aligned to the right */
+.temperature-display {
+    font-size: 4.5em;
+    font-weight: bold;
+    color: #333;
+    margin-right: 20px;
+    text-align: right;
+}
+
+/* Details section with icons in a single row */
+.details {
+    display: flex;
+    justify-content: space-between; /* Spread items equally */
+    margin-top: 20px;
+    gap: 20px; /* Space between details */
+}
+
+.detail-item {
+    text-align: center;
+    flex: 1; /* Each item takes up equal space */
+}
+
+.detail-item .icon {
+    width: 30px;
+    height: 30px;
+    display: block;
+    margin: 0 auto 5px;
+}
+
+.value {
+    font-weight: bold;
+    display: block;
+    margin-top: 5px;
+    font-size: 1.1em;
+}
+
+/* Table styling for 7-day forecast */
+.forecast-card {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+/* General table styling */
+table {
+    width: 100%;
+    border-collapse: separate; /* Separate border model to allow row spacing */
+    border-spacing: 0 0.25rem; /* Adds space between rows */
+    font-size: 16px;
+    text-align: left;
+}
+
+/* Header styling */
+th {
+    background-color: #39579a;
+    color: #ffffff;
+    text-align: center;
+    padding: 12px;
+}
+
+/* Body row styling */
+td {
+    background-color: #f3f3f3;
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #dddddd;
+}
+
+/* Center date column */
+td:first-child {
+    text-align: center;
+}
+
+/* Alternating row colors */
+tr:nth-child(even) td {
+    background-color: #ffffff;
+}
+
+/* Status icon styling */
+td img {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    margin-right: 0; /* Remove margin on the right */
+    margin-left: 10px; /* Add margin on the left */
+}
+
+/* Center-align the image and status text */
+.status-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-wrapper img {
+    margin-right: 10px; /* Space between image and text */
+}
+
+/* Temperature and wind speed cells */
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5) {
+    font-weight: bold;
+    color: #333333;
+}
+
+/* Responsive table */
+@media screen and (max-width: 768px) {
+    table {
+        font-size: 14px;
+    }
+    
+    td img {
+        width: 30px;
+        height: 30px;
+    }
+}
+/* Detailed Weather Card Styling */
+.detailed-weather-card {
+    max-width: 450px; /* Adjusted width for a more compact look */
+    height: auto; /* Adjust height to be more compact */
+    margin: 20px auto; /* Center the card with less vertical spacing */
+    background: linear-gradient(to bottom, #ffffff, #1e3a5f); /* Gradient from white to navy blue */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Slightly reduced shadow */
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    position: relative; /* Allows for absolute positioning of elements inside */
+    text-align: center; /* Center align text within the card */
+}
+
+/* Heading styling */
+.detailed-weather-heading {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    color: #333;
+    text-align: center; /* Align the heading centrally above the card */
+}
+
+/* Date styling */
+.weather-date {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #103870;
+    text-align: left; /* Align to the left of the icon */
+    margin-bottom: 10px;
+}
+
+/* Weather condition styling */
+.weather-condition {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #103870;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+/* Weather icon styling */
+.weather-icon-large {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 120px; /* Increased size */
+    height: 120px; /* Increased size */
+}
+
+/* Temperature styling */
+.temperature-display {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #103870;
+    margin-bottom: 15px;
+    text-align: left; /* Align to the left of the icon */
+}
+
+/* Detailed stats styling (centered below all other information) */
+.detailed-stats {
+    font-size: 0.9em;
+    color: #ffffff;
+    text-align: center; /* Center align the detailed stats */
+    line-height: 1.6;
+    margin-top: 15px;
+}
+
+/* Styling individual stats */
+.detailed-stats p {
+    margin: 5px 0;
+}
+
+/* Add a slightly different color for stats titles */
+.detailed-stats p strong {
+    color: #ffffff;
+}
+
+.toggle-chart-button {
+    margin: 15px auto; /* Adds space and centers the button */
+    display: block; /* Centers the button */
+    background-color: #314c97; /* Matching blue background color */
+    color: white; /* White arrow color */
+    border: none;
+    padding: 10px 20px; /* Spacing for clickability */
+    font-size: 1.2em; /* Larger arrow size for visibility */
+    cursor: pointer; /* Shows pointer cursor */
+}
+
+.toggle-chart-button:hover {
+    background-color: #305bff; /* Slightly darker on hover */
+}
+
+/* Center the h2 text within the weather-charts-toggle container */
+.weather-charts-toggle h2 {
+    text-align: center;
+    /* Optional: Add some margin for spacing */
+    margin-bottom: 10px;
+}
+
+#temperature-range-chart{
+    z-index: 3;
+}
+
+#forecast-card {
+    display: none;
+}
+
+/* Arrow button styling */
+.arrow-button {
+    background: none;        /* No background */
+    border: none;            /* No border */
+    cursor: pointer;         /* Pointer cursor for better UX */
+    margin: 20px 0;          /* Vertical margin to add space */
+    display: block;          /* Center horizontally */
+    margin-left: auto;       
+    margin-right: auto;      
+}
+
+/* Arrow image styling */
+#arrow-image {
+    width: 36px;             /* Set desired width of the arrow image */
+    height: 36px;            /* Set desired height of the arrow image */
+    transform: rotate(0deg); /* Initial state pointing downwards */
+    transition: transform 0.3s ease; /* Smooth transition for rotation */
+}
+
+
+/* Chart section container */
+#weather-chart-section {
+    display: flex;
+    flex-direction: column;    /* Stack charts vertically */
+    align-items: center;       /* Center the charts */
+    gap: 20px;                 /* Adds space between the charts */
+    width: 1000px;             /* Match the forecast table width */
+    margin: 0 auto;            /* Center the entire section */
+    padding: 20px;             /* Padding around the entire section for better spacing */
+    box-sizing: border-box;    /* Include padding in width calculation */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Individual chart styling */
+.chart-container {
+    width: 90%;                /* Adjust chart width to 90% of the container */
+    max-width: 900px;          /* Set a max width to avoid overly large charts */
+    padding: 10px;             /* Padding inside the chart container */
+    background: #f9f9f9;       /* Light background for visual separation */
+    border: 1px solid #ddd;    /* Light border for the chart box */
+    border-radius: 8px;        /* Rounded corners for better aesthetics */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+#hourly-weather-chart {
+    margin-top: 20px;
+}
+
+#toggle-chart-button {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+#toggle-chart-button img {
+    margin-right: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+#toggle-chart-button[aria-expanded="true"] img {
+    transform: rotate(180deg);
+}
+
+/* styles.css */
+
+/* Change cursor to pointer when hovering over table rows in the forecast card */
+#forecast-card table tbody tr:hover {
+    cursor: pointer;
+}
+
