@@ -1,0 +1,44 @@
+runtime: nodejs20
+
+env: standard
+
+instance_class: F1
+
+entrypoint: node server.js  # Add this line to specify the entry point
+
+env_variables:
+  MONGODB_URI: "mongodb+srv://dcharankumarnaidu:Wk3DPBgSfxvZsb3O@weathe-app.tmaac.mongodb.net/?retryWrites=true&w=majority&appName=Weathe-App"
+  TOMORROW_API_KEY: "iFiWf8Ev4EdXvuk18DniVjkGtgF7ho9q"
+  GOOGLE_GEOCODING_API_KEY: "AIzaSyCZTjRDjwEtT7ATogO6AEFSrD6LJQOHWCE"
+  IPINFO: "a2f0876bb0453a"
+
+handlers:
+- url: /api/.*
+  script: auto
+  secure: always
+
+- url: /
+  static_files: dist/frontend/browser/index.html
+  upload: dist/frontend/browser/index.html
+
+- url: /(.*)
+  static_files: dist/frontend/browser/\1
+  upload: dist/frontend/browser/(.*)
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 10
+  target_throughput_utilization: 0.6
+
+includes:
+- env_variables.yaml
+
+network:
+  session_affinity: true
+
+readiness_check:
+  app_start_timeout_sec: 300
+
+liveness_check:
+  initial_delay_sec: 300

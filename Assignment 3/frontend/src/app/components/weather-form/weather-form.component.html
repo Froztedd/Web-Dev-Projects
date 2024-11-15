@@ -1,0 +1,358 @@
+<div class="container d-flex flex-column align-items-center bg-white w-100 max-width-1200 mx-auto position-relative overflow-x-hidden">
+  
+  <!-- Form Container - Always Visible -->
+  <div class="form-container card w-100 bg-light p-4">
+    <h2 class="form-title text-center fs-4 fw-normal mb-4">
+      Weather Search <span class="weather-emoji">🌥️</span>
+    </h2>
+    
+    <form [formGroup]="weatherForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Street Input -->
+      <div class="form-group mb-3">
+        <label class="form-label">Street<span class="required text-danger">*</span></label>
+        <div class="input-container position-relative">
+          <input type="text" 
+                 formControlName="street" 
+                 class="form-control"
+                 placeholder="Enter street address">
+          <div class="error-message mt-1" *ngIf="street?.invalid && (street?.dirty || street?.touched)">
+            Please enter a valid street
+          </div>
+        </div>
+      </div>
+
+      <!-- City Input with Autocomplete -->
+      <div class="form-group mb-3 position-relative">
+        <label for="city" class="form-label">City<span class="required text-danger">*</span></label>
+        <div class="input-container position-relative">
+          <input 
+            id="city" 
+            type="text" 
+            formControlName="city"
+            #cityInput
+            class="form-control"
+            placeholder="Enter city name"
+            (input)="onCityInput()"
+            (blur)="onCityBlur()"
+            autocomplete="off">
+          <div class="error-message mt-1" *ngIf="city?.invalid && (city?.dirty || city?.touched)">
+            Please enter a valid city
+          </div>
+          <!-- Suggestions List -->
+          <ul class="suggestions-list list-group position-absolute w-100" *ngIf="showSuggestions && citySuggestions.length > 0">
+            <li 
+              *ngFor="let suggestion of citySuggestions" 
+              class="suggestion-item list-group-item list-group-item-action"
+              (click)="selectCitySuggestion(suggestion)"
+              (mousedown)="$event.preventDefault()">
+              {{ suggestion.description }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- State Selection -->
+      <div class="form-group mb-3">
+        <label class="form-label">State<span class="required text-danger">*</span></label>
+        <div class="input-container">
+          <select formControlName="state" class="form-select">
+            <option value="">Select your state</option>
+            <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+          </select>
+          <div class="error-message mt-1" *ngIf="state?.invalid && (state?.dirty || state?.touched)">
+            Please select a state
+          </div>
+        </div>
+      </div>
+
+      <!-- Separator -->
+      <hr class="separator my-4">
+
+      <!-- Autodetect Location -->
+      <div class="autodetect-section d-flex justify-content-center align-items-center gap-2 mb-3">
+        <div class="form-check">
+          <input 
+            type="checkbox" 
+            class="form-check-input location-checkbox"
+            formControlName="autodetectLocation"
+            id="autodetectLocation">
+          <label class="form-check-label" for="autodetectLocation">
+            Autodetect Location<span class="text-danger">*</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-container d-flex justify-content-center gap-2 mt-3">
+        <button type="submit" class="btn btn-primary search-button" [disabled]="!weatherForm.valid || loading">
+          🔍 Search
+        </button>
+        <button type="button" class="btn btn-secondary clear-button" (click)="clearForm()">
+          ≡ Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Content Area for Results and Details -->
+  <div class="content-area w-100 position-relative">
+    
+    <!-- Loading Indicator -->
+    <div class="loading-container d-flex justify-content-center w-100 my-3" *ngIf="loading">
+      <div class="loading-bar">
+          <div class="loading-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Tabs for Results and Favorites -->
+    <ul class="nav nav-tabs justify-content-center my-3">
+      <li class="nav-item">
+        <button class="nav-link" 
+                [class.active]="activeTab === 'results'"
+                (click)="toggleTab('results')">Results</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" 
+                [class.active]="activeTab === 'favorites'"
+                (click)="toggleTab('favorites')">Favorites</button>
+      </li>
+    </ul>
+
+    <!-- Panels Wrapper for Sliding Panels -->
+    <div class="panels-wrapper d-flex transition-transform" [class.show-details]="showDetails">
+      
+      <!-- Results Panel -->
+      <div class="panel form-panel w-50 p-4 bg-white">
+        <div *ngIf="activeTab === 'results' && results.length > 0">
+          <div class="forecast-container d-flex flex-column w-100" [ngClass]="{'day-view': activeView === 'day', 'chart-view': activeView === 'temp' || activeView === 'meteogram'}">
+            <h2 class="forecast-title text-center fs-5 fw-medium mb-4">
+              Forecast at {{ results[0].city }}, {{ results[0].state }}
+            </h2>
+
+            <!-- Header Actions: Favorite and Details Buttons -->
+            <div class="header-section d-flex justify-content-between align-items-center mb-3">
+              <div class="header-actions d-flex gap-2">
+                <!-- Favorite Button -->
+                <button 
+                  class="favorite-button"
+                  [class.favorited]="isLocationFavorite(results[0].city, results[0].state)"
+                  (click)="toggleFavorite(results[0])"
+                  aria-label="Toggle favorite">
+                  <i class="bi" 
+                     [class.bi-star-fill]="isLocationFavorite(results[0].city, results[0].state)" 
+                     [class.bi-star]="!isLocationFavorite(results[0].city, results[0].state)">
+                  </i>
+                </button>
+                
+                <!-- Details Button -->
+                <button class="details-button" (click)="toggleDetails()">
+                  Details <span class="arrow">›</span>
+                </button>
+              </div>
+
+              <!-- View Tabs -->
+              <div class="view-tabs btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary view-tab" [class.active]="activeView === 'day'" (click)="switchView('day')">
+                  Day view
+                </button>
+                <button type="button" class="btn btn-outline-primary view-tab" [class.active]="activeView === 'temp'" (click)="switchView('temp')">
+                  Daily Temp Chart
+                </button>
+                <button type="button" class="btn btn-outline-primary view-tab" [class.active]="activeView === 'meteogram'" (click)="switchView('meteogram')">
+                  Meteogram
+                </button>
+              </div>
+            </div>
+
+            <!-- View Container -->
+            <div class="view-container w-100">
+              
+              <!-- Day View: Weather Table -->
+              <div class="table-view" *ngIf="activeView === 'day'">
+                <table class="table table-hover forecast-table mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="col-number">#</th>
+                      <th class="col-date">Date</th>
+                      <th class="col-status">Status</th>
+                      <th class="col-temp">Temp. High(°F)</th>
+                      <th class="col-temp">Temp. Low(°F)</th>
+                      <th class="col-wind">Wind Speed(mph)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let day of results[0].weather_data; let i = index" class="hover-bg-gray">
+                      <th scope="row">{{ i + 1 }}</th>
+                      <td class="p-2 border cursor-pointer hover-bg-gray" 
+                          (click)="showDayDetails(day.startTime)">
+                        {{ getFormattedDate(day.startTime) }}
+                      </td>
+                      <td class="status-cell">
+                        <img [src]="day.values.icon" 
+                             [alt]="getWeatherStatus(day.values.weatherCode)"
+                             class="me-2"
+                             (error)="handleImageError($event)">
+                        {{ getWeatherStatus(day.values.weatherCode) }}
+                      </td>
+                      <td>{{ day.values.temperatureMax }}°F</td>
+                      <td>{{ day.values.temperatureMin }}°F</td>
+                      <td>{{ day.values.windSpeed }} mph</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Charts Wrapper -->
+              <div class="charts-wrapper w-100">
+                <!-- Temperature Chart Container -->
+                <div id="temperatureChart" class="chart-container" [style.display]="activeView === 'temp' ? 'block' : 'none'">
+                  <!-- Temperature chart will be rendered here -->
+                  <div class="w-100" style="height: 400px;"></div>
+                </div>
+
+                <!-- Meteogram Chart Container -->
+                <div id="meteogramChart" class="chart-container" [style.display]="activeView === 'meteogram' ? 'block' : 'none'">
+                  <!-- Meteogram chart will be rendered here -->
+                  <div class="w-100" style="height: 400px;"></div>
+                </div>
+              </div>
+            </div>
+            <!-- End of View Container -->
+
+          </div>
+        </div>
+
+        <!-- Favorites Tab Content -->
+        <div *ngIf="activeTab === 'favorites' && favorites().length > 0" class="favorites-tab p-3">
+          <ng-container *ngIf="favorites().length > 0; else noFavorites">
+            <table class="table table-striped w-100">
+              <thead>
+                <tr>
+                  <th class="p-4 text-left border-bottom">#</th>
+                  <th class="p-4 text-left border-bottom">City</th>
+                  <th class="p-4 text-left border-bottom">State</th>
+                  <th class="p-4 text-right border-bottom"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let favorite of favorites(); let i = index" class="hover-bg-gray">
+                  <th scope="row" class="p-4 border-bottom">{{ i + 1 }}</th>
+                  <td class="p-4 border-bottom">
+                    <a href="javascript:void(0)" 
+                       class="text-primary text-decoration-underline"
+                       (click)="onFavoriteClick(favorite)">
+                      {{ favorite.city }}
+                    </a>
+                  </td>
+                  <td class="p-4 border-bottom">
+                    <a href="javascript:void(0)" 
+                       class="text-primary text-decoration-underline"
+                       (click)="onFavoriteClick(favorite)">
+                      {{ favorite.state }}
+                    </a>
+                  </td>
+                  <td class="p-4 border-bottom text-end">
+                    <button 
+                      class="btn btn-link text-danger p-0"
+                      (click)="removeFromFavorites(favorite)"
+                      aria-label="Remove from favorites">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
+          <ng-template #noFavorites>
+            <div class="p-4 text-center text-muted">
+              No favorites added yet
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Details Panel -->
+      <!-- Details Panel -->
+<!-- Details Panel -->
+<div class="panel details-panel w-50 p-4 bg-white" *ngIf="showDetails">
+  <div class="details-header d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-light back-button" (click)="hideDetails()">
+      ‹ List
+    </button>
+    <h2 class="details-title fs-5 fw-medium mb-0">{{ selectedDate ? getFormattedDate(selectedDate) : '' }}</h2>
+    <button class="x-share-button" (click)="shareWeather()">
+      <i class="bi bi-twitter-x"></i>
+    </button>
+  </div>
+
+  <div *ngIf="selectedDate && getDayWeather(selectedDate) as dayWeather" class="weather-details">
+    <!-- Weather Details Table -->
+    <div class="details-table">
+      <div class="details-row">
+        <div class="details-label">Status</div>
+        <div class="details-value">{{ getWeatherStatus(dayWeather.values.weatherCode) }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Max Temperature</div>
+        <div class="details-value">{{ dayWeather.values.temperatureMax }}°F</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Min Temperature</div>
+        <div class="details-value">{{ dayWeather.values.temperatureMin }}°F</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Apparent Temperature</div>
+        <div class="details-value">{{ dayWeather.values.apparentTemperature }}°F</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Sun Rise Time</div>
+        <div class="details-value">{{ dayWeather.values.sunriseTime }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Sun Set Time</div>
+        <div class="details-value">{{ dayWeather.values.sunsetTime }}</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Humidity</div>
+        <div class="details-value">{{ dayWeather.values.humidity }}%</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Wind Speed</div>
+        <div class="details-value">{{ dayWeather.values.windSpeed }} mph</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Visibility</div>
+        <div class="details-value">{{ dayWeather.values.visibility }} mi</div>
+      </div>
+
+      <div class="details-row">
+        <div class="details-label">Cloud Cover</div>
+        <div class="details-value">{{ dayWeather.values.cloudCover }}%</div>
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="map-section mt-4">
+      <div class="map-container position-relative">
+        <div #googlemap class="google-map w-100" style="height: 400px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Error Message -->
+    <div class="error alert alert-danger text-center w-100 mt-3" role="alert" *ngIf="error">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ error }}
+    </div>
+  </div>
+</div>
